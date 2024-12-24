@@ -20,6 +20,9 @@ class MusicPlayerViewModel extends ChangeNotifier {
   bool get isPlaying => _isPlaying;
   String? get trackName2 => _trackName2;
 
+  final List<File> _playlist = [];
+  List<File> get playlist => _playlist;
+  int _currentIndex = 0;
 
   MusicPlayerViewModel() {
     _player.onPositionChanged.listen((position) {
@@ -39,15 +42,23 @@ class MusicPlayerViewModel extends ChangeNotifier {
   }
 
   Future<void> pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple:true);
 
     if (result != null) {
-      String? filePath = result.files.single.path;
-      if (filePath != null) {
-        final metadata = await _getMp3Metadata(filePath);
+      List<PlatformFile> files = result.files;
+      List<File> playlistFiles = [];
+      for(var file in files) {
+        String? filePath = file.path;
+        if (filePath != null) {
+          File file = File(filePath); // 선택된 파일 경로로 File 생성
+          playlistFiles.add(file);
+        }
+      }
+
+      if(playlistFiles.isNotEmpty) {
+        addFileToPlaylist(playlistFiles);
+        final metadata = await _getMp3Metadata(playlistFiles.first.path);
         _metadata = metadata;
-        File file = File(result.files.single.path!); // 선택된 파일 경로로 File 생성
-        addFileToPlaylist(file);
         if (metadata != null) {
           await play();
         }
@@ -57,9 +68,11 @@ class MusicPlayerViewModel extends ChangeNotifier {
 
   Future<void> play() async {
     if (_metadata?.filePath != null) {
-      if(_metadata?.trackName.isNullOrEmpty == true) {
+      _trackName2 = _metadata?.trackName;
+      if(_trackName2.isNullOrEmpty == true) {
         _trackName2 = path.basenameWithoutExtension(_metadata!.filePath!);
       }
+      _isPlaying = true;
       await _player.play(DeviceFileSource(_metadata!.filePath!));
     }
   }
@@ -72,6 +85,22 @@ class MusicPlayerViewModel extends ChangeNotifier {
     await _player.stop();
     _currentPosition = Duration.zero;
     notifyListeners(); // 상태 변경 알림
+  }
+
+  Future<void> next() async {
+    if(_playlist.isEmpty) return;
+
+    _currentIndex+=1;
+    if(_currentIndex > _playlist.length - 1) _currentIndex = 0;
+    await playSelectedFile(_currentIndex);
+  }
+
+  Future<void> previous() async {
+    if(_playlist.isEmpty) return;
+
+    _currentIndex-=1;
+    if(_currentIndex < 0) _currentIndex = _playlist.length - 1;
+    await playSelectedFile(_currentIndex);
   }
 
   Future<void> seek(Duration position) async {
@@ -89,18 +118,17 @@ class MusicPlayerViewModel extends ChangeNotifier {
     }
   }
 
-  List<File> _playlist = [];
-  List<File> get playlist => _playlist;
-
-  void addFileToPlaylist(File file) {
-    _playlist.add(file);
+  void addFileToPlaylist(List<File> files) {
+    for(var file in files) {
+      _playlist.add(file);
+    }
     notifyListeners();
   }
 
-  Future<void> playSelectedFile(String path) async {
-    _isPlaying = true;
-    final metadata = await _getMp3Metadata(path);
-    _metadata = metadata;
+  Future<void> playSelectedFile(int index) async {
+    _currentIndex = index;
+    var file = _playlist[index];
+    _metadata = await _getMp3Metadata(file.path);
     if (metadata != null) {
       await play();
     }

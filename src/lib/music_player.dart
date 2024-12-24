@@ -29,7 +29,7 @@ class MusicPlayerScreen extends StatelessWidget {
                       image: MemoryImage(metadata!.albumArt!),
                       fit: BoxFit.cover,
                     )
-                        : DecorationImage(
+                        : const DecorationImage(
                       image: AssetImage('assets/album_art.png'),
                       fit: BoxFit.cover,
                     ),
@@ -37,22 +37,20 @@ class MusicPlayerScreen extends StatelessWidget {
                 ),
                 Text(
                   viewModel.trackName2 ?? 'Empty',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Text(
                   metadata?.albumArtistName ?? 'Empty',
-                  style: TextStyle(fontSize: 18, color: Colors.grey),
+                  style: const TextStyle(fontSize: 18, color: Colors.grey),
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     IconButton(
-                      icon: Icon(Icons.skip_previous, size: 40),
-                      onPressed: () {
-                        // Previous song action
-                      },
+                      icon: const Icon(Icons.skip_previous, size: 40),
+                      onPressed: () => viewModel.previous(),
                     ),
                     IconButton(
                       icon: Icon(
@@ -68,17 +66,15 @@ class MusicPlayerScreen extends StatelessWidget {
                       },
                     ),
                     IconButton(
-                      icon: Icon(Icons.stop, size: 60),
+                      icon: const Icon(Icons.stop, size: 60),
                       onPressed: () => viewModel.stop(),
                     ),
                     IconButton(
-                      icon: Icon(Icons.skip_next, size: 40),
-                      onPressed: () {
-                        // Next song action
-                      },
+                      icon: const Icon(Icons.skip_next, size: 40),
+                      onPressed: () => viewModel.next(),
                     ),
                     IconButton(
-                      icon: Icon(Icons.file_open, size: 40),
+                      icon: const Icon(Icons.file_open, size: 40),
                       onPressed: () => viewModel.pickFile(),
                     ),
                   ],
@@ -92,7 +88,7 @@ class MusicPlayerScreen extends StatelessWidget {
                 ),
                 Text(
                   '${_formatDuration(position)} / ${_formatDuration(duration)}',
-                  style: TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 16),
                 ),
               ],
             );
@@ -105,7 +101,7 @@ class MusicPlayerScreen extends StatelessWidget {
               MaterialPageRoute(builder: (context) => PlaylistScreen()),
             );
           },
-          child: Icon(Icons.queue_music),
+          child: const Icon(Icons.queue_music),
         ),
       );
   }
