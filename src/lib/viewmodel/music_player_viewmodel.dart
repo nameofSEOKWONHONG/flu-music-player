@@ -25,6 +25,9 @@ class MusicPlayerViewModel extends ChangeNotifier {
   int _currentIndex = 0;
 
   MusicPlayerViewModel() {
+    _player.onPlayerComplete.listen((event) {
+      next();
+    });
     _player.onPositionChanged.listen((position) {
       _currentPosition = position;
       notifyListeners(); // 상태 변경 알림

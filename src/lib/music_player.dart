@@ -4,10 +4,12 @@ import 'package:provider/provider.dart';
 import '../viewmodel/music_player_viewmodel.dart';
 
 class MusicPlayerScreen extends StatelessWidget {
+  const MusicPlayerScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
       return Scaffold(
-        appBar: AppBar(title: Text('Now Playing')),
+        appBar: AppBar(title: const Text('Now Playing')),
         body: Consumer<MusicPlayerViewModel>(
           builder: (context, viewModel, child) {
             final metadata = viewModel.metadata;
@@ -19,7 +21,7 @@ class MusicPlayerScreen extends StatelessWidget {
               children: [
                 // 기존 코드 유지
                 Container(
-                  margin: EdgeInsets.all(20),
+                  margin: const EdgeInsets.all(20),
                   height: 250,
                   width: 250,
                   decoration: BoxDecoration(
