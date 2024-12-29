@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:music_player/utils/extionsions.dart';
 import 'package:music_player/viewmodel/music_player_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -21,8 +22,12 @@ class PlaylistScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               final file = playlist[index];
               return ListTile(
-                leading: const Icon(Icons.music_note),
-                title: Text(file.path.split('/').last), // 파일 이름 표시
+                leading: file.albumArt != null
+                    ? Image.memory(file.albumArt!, width: 50, height: 50, fit: BoxFit.cover)
+                    : const Icon(Icons.music_note, size: 50),
+                title: file.trackName.isNullOrEmpty == false
+                    ? Text(file.trackName!)
+                    : Text(file.filePath!.split('/').last),
                 onTap: () {
                   // 선택한 트랙 재생
                   viewModel.playSelectedFile(index);

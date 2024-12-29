@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_media_metadata/flutter_media_metadata.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:music_player/utils/extionsions.dart';
 import 'package:path/path.dart' as path;
 
 class MusicPlayerViewModel extends ChangeNotifier {
@@ -22,8 +23,8 @@ class MusicPlayerViewModel extends ChangeNotifier {
   String? get trackName2 => _trackName2;
   int get repeatMode => _repeatMode;
 
-  final List<File> _playlist = [];
-  List<File> get playlist => _playlist;
+  final List<Metadata> _playlist = [];
+  List<Metadata> get playlist => _playlist;
   int _currentIndex = 0;
 
   MusicPlayerViewModel() {
@@ -59,19 +60,18 @@ class MusicPlayerViewModel extends ChangeNotifier {
 
     if (result != null) {
       List<PlatformFile> files = result.files;
-      List<File> playlistFiles = [];
+      List<Metadata> playlistFiles = [];
       for(var file in files) {
         String? filePath = file.path;
         if (filePath != null) {
-          File file = File(filePath); // 선택된 파일 경로로 File 생성
-          playlistFiles.add(file);
+          final metadata = await _getMp3Metadata(filePath);
+          playlistFiles.add(metadata!);
         }
       }
 
       if(playlistFiles.isNotEmpty) {
-        addFileToPlaylist(playlistFiles);
-        final metadata = await _getMp3Metadata(playlistFiles.first.path);
-        _metadata = metadata;
+        _playlist.addAll(playlistFiles);
+        _metadata = playlistFiles.first;
         if (metadata != null) {
           await play();
         }
@@ -142,7 +142,7 @@ class MusicPlayerViewModel extends ChangeNotifier {
     }
   }
 
-  void addFileToPlaylist(List<File> files) {
+  void addFileToPlaylist(List<Metadata> files) {
     for(var file in files) {
       _playlist.add(file);
     }
@@ -152,7 +152,7 @@ class MusicPlayerViewModel extends ChangeNotifier {
   Future<void> playSelectedFile(int index) async {
     _currentIndex = index;
     var file = _playlist[index];
-    _metadata = await _getMp3Metadata(file.path);
+    _metadata = await _getMp3Metadata(file.filePath!);
     if (metadata != null) {
       await play();
     }
@@ -166,6 +166,3 @@ class MusicPlayerViewModel extends ChangeNotifier {
   }
 }
 
-extension StringExtensions on String? {
-  bool get isNullOrEmpty => this == null || this!.isEmpty;
-}

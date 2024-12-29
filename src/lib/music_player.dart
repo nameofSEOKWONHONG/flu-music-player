@@ -38,7 +38,7 @@ class MusicPlayerScreen extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  viewModel.trackName2 ?? 'Empty',
+                   viewModel.trackName2 ?? 'Empty',
                   style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
@@ -130,6 +130,7 @@ class MusicPlayerScreen extends StatelessWidget {
           },
           child: const Icon(Icons.queue_music),
         ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endTop
       );
   }
 
