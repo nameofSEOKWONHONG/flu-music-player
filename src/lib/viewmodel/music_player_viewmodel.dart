@@ -13,12 +13,14 @@ class MusicPlayerViewModel extends ChangeNotifier {
   Duration _totalDuration = Duration.zero;
   bool _isPlaying = false; // 재생 상태 추가
   String? _trackName2;
+  int _repeatMode = 0;
 
   Metadata? get metadata => _metadata;
   Duration get currentPosition => _currentPosition;
   Duration get totalDuration => _totalDuration;
   bool get isPlaying => _isPlaying;
   String? get trackName2 => _trackName2;
+  int get repeatMode => _repeatMode;
 
   final List<File> _playlist = [];
   List<File> get playlist => _playlist;
@@ -26,7 +28,15 @@ class MusicPlayerViewModel extends ChangeNotifier {
 
   MusicPlayerViewModel() {
     _player.onPlayerComplete.listen((event) {
-      next();
+      if(_repeatMode == 0) {
+        stop();
+      }
+      else if(_repeatMode == 1) {
+        play();
+      }
+      else if(_repeatMode == 2) {
+        next();
+      }
     });
     _player.onPositionChanged.listen((position) {
       _currentPosition = position;
@@ -70,13 +80,18 @@ class MusicPlayerViewModel extends ChangeNotifier {
   }
 
   Future<void> play() async {
-    if (_metadata?.filePath != null) {
-      _trackName2 = _metadata?.trackName;
-      if(_trackName2.isNullOrEmpty == true) {
-        _trackName2 = path.basenameWithoutExtension(_metadata!.filePath!);
+    if(_player.state == PlayerState.paused) {
+      await _player.resume();
+    }
+    else {
+      if (_metadata?.filePath != null) {
+        _trackName2 = _metadata?.trackName;
+        if(_trackName2.isNullOrEmpty == true) {
+          _trackName2 = path.basenameWithoutExtension(_metadata!.filePath!);
+        }
+        _isPlaying = true;
+        await _player.play(DeviceFileSource(_metadata!.filePath!));
       }
-      _isPlaying = true;
-      await _player.play(DeviceFileSource(_metadata!.filePath!));
     }
   }
 
@@ -108,6 +123,12 @@ class MusicPlayerViewModel extends ChangeNotifier {
 
   Future<void> seek(Duration position) async {
     await _player.seek(position);
+  }
+
+  void setRepeatMode() {
+    _repeatMode += 1;
+    if(_repeatMode >= 3) _repeatMode = 0;
+    notifyListeners();
   }
 
   Future<Metadata?> _getMp3Metadata(String filePath) async {

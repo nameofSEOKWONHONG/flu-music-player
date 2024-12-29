@@ -57,7 +57,7 @@ class MusicPlayerScreen extends StatelessWidget {
                     IconButton(
                       icon: Icon(
                         viewModel.isPlaying ? Icons.pause : Icons.play_arrow,
-                        size: 60,
+                        size: 40,
                       ),
                       onPressed: () {
                         if (viewModel.isPlaying) {
@@ -68,15 +68,40 @@ class MusicPlayerScreen extends StatelessWidget {
                       },
                     ),
                     IconButton(
-                      icon: const Icon(Icons.stop, size: 60),
+                      icon: const Icon(Icons.stop, size: 40),
                       onPressed: () => viewModel.stop(),
                     ),
                     IconButton(
                       icon: const Icon(Icons.skip_next, size: 40),
                       onPressed: () => viewModel.next(),
                     ),
+                    if(viewModel.repeatMode == 0)
                     IconButton(
-                      icon: const Icon(Icons.file_open, size: 40),
+                      icon:
+                      const Icon(
+                          Icons.repeat
+                          , size: 40),
+                      onPressed: () => viewModel.setRepeatMode(),
+                    ),
+                    if(viewModel.repeatMode == 1)
+                      IconButton(
+                        icon:
+                        const Icon(
+                            Icons.repeat_one
+                            , size: 40),
+                        onPressed: () => viewModel.setRepeatMode(),
+                      ),
+                    if(viewModel.repeatMode == 2)
+                      IconButton(
+                        icon:
+                        const Icon(
+                            Icons.repeat_on
+                            , size: 40),
+                        onPressed: () => viewModel.setRepeatMode(),
+                      ),
+                    IconButton(
+                      icon: const Icon(
+                          Icons.file_open_rounded, size: 30),
                       onPressed: () => viewModel.pickFile(),
                     ),
                   ],
