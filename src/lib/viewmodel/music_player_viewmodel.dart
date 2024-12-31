@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_media_metadata/flutter_media_metadata.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:music_player/utils/extionsions.dart';
 import 'package:path/path.dart' as path;
 
@@ -80,6 +81,15 @@ class MusicPlayerViewModel extends ChangeNotifier {
   }
 
   Future<void> play() async {
+    if(_playlist.isEmpty) {
+      Fluttertoast.showToast(msg: "playlist is empty",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          textColor: Colors.purple,
+          fontSize: 16.0);
+      return;
+    }
+
     if(_player.state == PlayerState.paused) {
       await _player.resume();
     }
@@ -106,7 +116,14 @@ class MusicPlayerViewModel extends ChangeNotifier {
   }
 
   Future<void> next() async {
-    if(_playlist.isEmpty) return;
+    if(_playlist.isEmpty) {
+      Fluttertoast.showToast(msg: "playlist is empty",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      textColor: Colors.purple,
+      fontSize: 16.0);
+      return;
+    }
 
     _currentIndex+=1;
     if(_currentIndex > _playlist.length - 1) _currentIndex = 0;
@@ -114,7 +131,14 @@ class MusicPlayerViewModel extends ChangeNotifier {
   }
 
   Future<void> previous() async {
-    if(_playlist.isEmpty) return;
+    if(_playlist.isEmpty) {
+      Fluttertoast.showToast(msg: "playlist is empty",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          textColor: Colors.purple,
+          fontSize: 16.0);
+      return;
+    }
 
     _currentIndex-=1;
     if(_currentIndex < 0) _currentIndex = _playlist.length - 1;

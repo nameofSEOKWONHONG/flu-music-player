@@ -5,9 +5,10 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      body: Column(
+      appBar: AppBar(title: const Text('setting')),
+      body: const Column(
         children: [
-          Text('about')
+          Text('setting')
         ],
       ),
     );

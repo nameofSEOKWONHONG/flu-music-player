@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:music_player/playlist_screen.dart';
 import 'package:provider/provider.dart';
 import '../viewmodel/music_player_viewmodel.dart';
+import 'about_screen.dart';
 
 class MusicPlayerScreen extends StatelessWidget {
   const MusicPlayerScreen({super.key});
@@ -9,7 +10,8 @@ class MusicPlayerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Now Playing')),
+        drawer: const AppDrawer(),
+        appBar: AppBar(title: const Text('Solo Music Player')),
         body: Consumer<MusicPlayerViewModel>(
           builder: (context, viewModel, child) {
             final metadata = viewModel.metadata;
@@ -140,3 +142,66 @@ class MusicPlayerScreen extends StatelessWidget {
   }
 }
 
+class AppDrawer extends StatelessWidget {
+  const AppDrawer({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            decoration: const BoxDecoration(
+              color: Colors.blue,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Text(
+                  'Menu',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.home),
+            title: const Text('Home'),
+            onTap: () {
+              Navigator.pop(context); // Drawer 닫기
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Home selected')),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('Settings'),
+            onTap: () {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Settings selected')),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.info),
+            title: const Text('About'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AboutScreen()),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
