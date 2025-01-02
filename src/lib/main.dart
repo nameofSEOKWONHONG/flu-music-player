@@ -25,8 +25,9 @@ class MusicPlayerApp extends StatelessWidget {
       theme: ThemeData(primarySwatch: Colors.blue),
       home: const MusicPlayerScreen(),
       routes: {
+        '/playlist': (context) => PlaylistScreen(),
         '/settings': (context) => SettingsScreen(),
-        '/about': (context) => AboutScreen(),
+        '/about': (context) => const AboutScreen(),
       },
     );
   }
